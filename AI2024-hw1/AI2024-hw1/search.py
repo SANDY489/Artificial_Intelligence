@@ -82,9 +82,23 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    from util import Queue
+    path = [] #path to destination
+    # Queue.push(0, problem.getStartState())
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    successor = problem.getSuccessors(problem.getStartState())[0][0]
+    state = Queue()
+    state.push(successor)
+    print("successor: ",state.list)
+    # while 1:
+    #     if problem.isGoalState(problem.getStartState()):
+    #         return path
+    #     else:
+    #         successor = problem.getSuccessors(Queue.front()).Successor
+    #         Queue.push()
+    
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
