@@ -82,28 +82,61 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    from util import Queue
-    path = [] #path to destination
-    # Queue.push(0, problem.getStartState())
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    successor = problem.getSuccessors(problem.getStartState())[0][0]
-    state = Queue()
-    state.push(successor)
-    print("successor: ",state.list)
-    # while 1:
-    #     if problem.isGoalState(problem.getStartState()):
-    #         return path
-    #     else:
-    #         successor = problem.getSuccessors(Queue.front()).Successor
-    #         Queue.push()
+    from util import Stack
     
+    frontier = Stack() # (state, path)
+    visited = [] # visited states
+    path = [] # path actions
+    if problem.isGoalState(problem.getStartState()):
+        return path
+    frontier.push((problem.getStartState(),path))
+
+    while(True):
+        if frontier.isEmpty():
+            return [] # no solution
+        state, path = frontier.pop()
+        visited.append(state)
+
+        if problem.isGoalState(state):
+            return path
+        
+        successor = problem.getSuccessors(state)
+        if successor:
+            for item in successor:
+                if item[0] not in visited:
+                # item[0] = state
+                # item[1] = path
+                    frontier.push((item[0], path+[item[1]]))
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    from util import Queue
+    frontier = Queue() #(state, path)
+    visited = [] # visited states
+    path = [] # path actions
+    if problem.isGoalState(problem.getStartState()):
+        return path
+    frontier.push((problem.getStartState(),path))
+
+    while(True):
+        if frontier.isEmpty():
+            return [] # no solution
+        state, path = frontier.pop()
+        visited.append(state)
+
+        if problem.isGoalState(state):
+            return path
+        
+        successor = problem.getSuccessors(state)
+        if successor:
+            for item in successor:
+                if item[0] not in visited and item[0] not in (State[0] for State in frontier.list):
+                # item[0] = state
+                # item[1] = path
+                    frontier.push((item[0], path+[item[1]]))
+
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
