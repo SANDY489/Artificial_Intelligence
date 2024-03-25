@@ -281,6 +281,8 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        # starting position, 4 corners visited or not
+        return (self.startingPosition, (False, False, False, False))
         util.raiseNotDefined()
 
     def isGoalState(self, state: Any):
@@ -288,6 +290,8 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        # if all corners been visited, return True
+        return all(state[1])
         util.raiseNotDefined()
 
     def getSuccessors(self, state: Any):
@@ -311,7 +315,19 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            x,y = state[0]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
 
+            visitedCorners = list(state[1])
+
+            if not hitsWall:
+                nextpos = (nextx, nexty)
+                if nextpos in self.corners:
+                    index = self.corners.index(nextpos)
+                    visitedCorners[index] = True
+                successors.append(((nextpos, tuple(visitedCorners)), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -347,7 +363,19 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    from util import manhattanDistance
+    current, VisitedCorners = state
+    unvisited = []
+    for corner in corners:
+        if corner not in VisitedCorners:
+            unvisited.append(corner)
+
+    if not unvisited:
+        return 0
+    
+    heristic = min(manhattanDistance(current, unvisitedcorner) for unvisitedcorner in unvisited)
+    
+    return heristic # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
