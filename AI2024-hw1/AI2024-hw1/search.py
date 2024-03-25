@@ -85,58 +85,53 @@ def depthFirstSearch(problem: SearchProblem):
     from util import Stack
     
     frontier = Stack() # (state, path)
-    visited = [] # visited states
+    visited = set() # visited states
     path = [] # path actions
     if problem.isGoalState(problem.getStartState()):
         return path
     frontier.push((problem.getStartState(),path))
+    visited.add(problem.getStartState())
 
-    while(True):
-        if frontier.isEmpty():
-            return [] # no solution
+    while not frontier.isEmpty():
         state, path = frontier.pop()
-        visited.append(state)
+        visited.add(state)
 
         if problem.isGoalState(state):
             return path
         
-        successor = problem.getSuccessors(state)
-        if successor:
-            for item in successor:
-                if item[0] not in visited:
-                # item[0] = state
-                # item[1] = path
-                    frontier.push((item[0], path+[item[1]]))
+        successors = problem.getSuccessors(state)
+        for successor in successors:
+            succ_state, succ_action, _ = successor
+            if succ_state not in visited:
+                frontier.push((succ_state, path+[succ_action]))
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
     from util import Queue
-    frontier = Queue() #(state, path)
-    visited = [] # visited states
-    path = [] # path actions
-    if problem.isGoalState(problem.getStartState()):
+    frontier = Queue()  # (state, path)
+    visited = set()  # visited states (using set for O(1) lookups)
+    path = []  # path actions
+    start_state = problem.getStartState()
+    
+    if problem.isGoalState(start_state):
         return path
-    frontier.push((problem.getStartState(),path))
+    
+    frontier.push((start_state, path))
+    visited.add(start_state)  # Add start state to visited set
 
-    while(True):
-        if frontier.isEmpty():
-            return [] # no solution
+    while not frontier.isEmpty():
         state, path = frontier.pop()
-        visited.append(state)
 
         if problem.isGoalState(state):
             return path
         
-        successor = problem.getSuccessors(state)
-        if successor:
-            for item in successor:
-                if item[0] not in visited and item[0] not in (State[0] for State in frontier.list):
-                # item[0] = state
-                # item[1] = path
-                    frontier.push((item[0], path+[item[1]]))
-
+        successors = problem.getSuccessors(state)
+        for successor in successors:
+            succ_state, succ_action, _ = successor
+            if succ_state not in visited:
+                visited.add(succ_state)  # Mark this state as visited
+                frontier.push((succ_state, path + [succ_action]))
+    return []
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
