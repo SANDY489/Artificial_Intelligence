@@ -281,8 +281,8 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        # starting position, 4 corners visited or not
-        return (self.startingPosition, (False, False, False, False))
+        # starting position, 4 corners
+        return (self.startingPosition, self.corners)
         util.raiseNotDefined()
 
     def isGoalState(self, state: Any):
@@ -290,8 +290,8 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        # if all corners been visited, return True
-        return all(state[1])
+        # empty corners
+        return not state[1] 
         util.raiseNotDefined()
 
     def getSuccessors(self, state: Any):
@@ -320,14 +320,16 @@ class CornersProblem(search.SearchProblem):
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
 
-            visitedCorners = list(state[1])
+            unvisited_corners = list(state[1])
+            next_corners = []
 
             if not hitsWall:
                 nextpos = (nextx, nexty)
-                if nextpos in self.corners:
-                    index = self.corners.index(nextpos)
-                    visitedCorners[index] = True
-                successors.append(((nextpos, tuple(visitedCorners)), action, 1))
+                for corner in unvisited_corners:
+                    if corner != nextpos:
+                        next_corners.append(corner)
+
+                successors.append(((nextpos, tuple(next_corners)), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -364,19 +366,23 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
 
     "*** YOUR CODE HERE ***"
     from util import manhattanDistance
-    current, VisitedCorners = state
-    unvisited = []
-    for corner in corners:
-        if corner not in VisitedCorners:
-            unvisited.append(corner)
+    current, unvisited_corner = state
+    next_corners = list(unvisited_corner) #incoming corners
+    heuristic = 0
 
-    if not unvisited:
+    if not next_corners:
         return 0
     
-    heristic = min(manhattanDistance(current, unvisitedcorner) for unvisitedcorner in unvisited)
-    
-    return heristic # Default to trivial solution
+    while len(next_corners) != 0:
+        distance = [manhattanDistance(current, next_corner) for next_corner in next_corners]
+        min_distance, min_idx = min((dist, idx) for idx, dist in enumerate(distance))
+        heuristic += min_distance
+        next_pos = next_corners.pop(min_idx)
+        current = next_pos
 
+    return heuristic
+
+  
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):
