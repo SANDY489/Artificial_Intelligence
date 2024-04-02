@@ -104,6 +104,7 @@ def depthFirstSearch(problem: SearchProblem):
             succ_state, succ_action, _ = successor
             if succ_state not in visited:
                 frontier.push((succ_state, path+[succ_action]))
+    return path
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
@@ -131,7 +132,7 @@ def breadthFirstSearch(problem: SearchProblem):
             if succ_state not in visited:
                 visited.add(succ_state)  # Mark this state as visited
                 frontier.push((succ_state, path + [succ_action]))
-    return []
+    return path
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
@@ -156,7 +157,7 @@ def uniformCostSearch(problem: SearchProblem):
                 new_path = path+[succ_path]
                 priprity = problem.getCostOfActions(new_path)
                 frontier.push((successor, new_path, priprity), priprity)
-    return []
+    return path
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
