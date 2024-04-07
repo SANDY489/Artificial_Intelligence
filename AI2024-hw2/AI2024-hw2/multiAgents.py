@@ -163,8 +163,39 @@ class MinimaxAgent(MultiAgentSearchAgent):
         print("depth", self.depth)
         print("eval func",self.evaluationFunction)
         print("pacman actions: ",gameState.getLegalActions(0))
-        print(gameState.generateSuccessor(0, action))
-        util.raiseNotDefined()       
+        print("ghost1 actions: ",gameState.getLegalActions(1))
+        print("ghost2 actions: ",gameState.getLegalActions(2))
+        print("ghost3 actions: ",gameState.getLegalActions(3))
+        # print("gameState.generateSuccessor(): ", gameState.generateSuccessor(0, gameState.getLegalActions(0)[0]))
+        # print(gameState.generateSuccessor(0, action))
+        print("getNumAgents: ",gameState.getNumAgents())
+        # print("agent:", )
+
+
+        def max_value(gameState, agentIndex, depth):
+            val = -1000000000
+            if gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(GameState)
+            # for each successor of state, v = max(v, min_value(successor))
+            for action in gameState.getLegalActions(agentIndex):
+                # print("action:", gameState.generateSuccessor(agentIndex, action))
+                successor = gameState.generateSuccessor(agentIndex, action)
+                val = max(val, min_value(successor, 1, depth))
+            return val
+        
+        
+        def min_value(gameState, agentIndex, depth):
+            val = 1000000000
+            if gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(GameState)
+            for action in gameState.getLegalActions(agentIndex):
+                print("action:", gameState.generateSuccessor(agentIndex, action))
+            
+            return val
+        
+        max_value(gameState, 0, 4)
+        util.raiseNotDefined()   
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
