@@ -80,10 +80,14 @@ class ReflexAgent(Agent):
         capsules =  currentGameState.getCapsules()
 
         "*** YOUR CODE HERE ***"
-        eval_score += max(newGhostDis,3)
+       
+        eval_score += max(newGhostDis,4)
+        # print("max(newGhostDis,3): ", max(newGhostDis,3))
+        # print("len(foods): ", len(foods))
+        # print("len(currentGameState.getFood().asList(): ", len(currentGameState.getFood().asList()))
         if len(foods) < len(currentGameState.getFood().asList()):
             eval_score += 100
-        shorestFoodDis =  50
+        shorestFoodDis =  100
         for food in foods:
             distance = util.manhattanDistance(food, newPos)
             if distance < shorestFoodDis:
@@ -92,7 +96,7 @@ class ReflexAgent(Agent):
         if newPos in capsules:
             eval_score += 100 
         if action == Directions.STOP:
-            eval_score -= 10
+            eval_score -= 100
         return eval_score
 
         
@@ -156,6 +160,10 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
+        print("depth", self.depth)
+        print("eval func",self.evaluationFunction)
+        print("pacman actions: ",gameState.getLegalActions(0))
+        print(gameState.generateSuccessor(0, action))
         util.raiseNotDefined()       
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
