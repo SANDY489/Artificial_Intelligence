@@ -71,11 +71,31 @@ class ReflexAgent(Agent):
         successorGameState = currentGameState.generatePacmanSuccessor(action)
         newPos = successorGameState.getPacmanPosition()
         newFood = successorGameState.getFood()
+        foods = newFood.asList()
         newGhostStates = successorGameState.getGhostStates()
+        newGhostPos = successorGameState.getGhostPosition(1)
+        newGhostDis = util.manhattanDistance(newGhostPos,newPos)
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+        eval_score = successorGameState.getScore()
+        capsules =  currentGameState.getCapsules()
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        eval_score += max(newGhostDis,3)
+        if len(foods) < len(currentGameState.getFood().asList()):
+            eval_score += 100
+        shorestFoodDis =  50
+        for food in foods:
+            distance = util.manhattanDistance(food, newPos)
+            if distance < shorestFoodDis:
+                shorestFoodDis = distance
+        eval_score += 100 / shorestFoodDis
+        if newPos in capsules:
+            eval_score += 100 
+        if action == Directions.STOP:
+            eval_score -= 10
+        return eval_score
+
+        
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
