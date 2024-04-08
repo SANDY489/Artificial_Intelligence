@@ -160,42 +160,35 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        print("depth", self.depth)
-        print("eval func",self.evaluationFunction)
-        print("pacman actions: ",gameState.getLegalActions(0))
-        print("ghost1 actions: ",gameState.getLegalActions(1))
-        print("ghost2 actions: ",gameState.getLegalActions(2))
-        print("ghost3 actions: ",gameState.getLegalActions(3))
-        # print("gameState.generateSuccessor(): ", gameState.generateSuccessor(0, gameState.getLegalActions(0)[0]))
-        # print(gameState.generateSuccessor(0, action))
-        print("getNumAgents: ",gameState.getNumAgents())
-        # print("agent:", )
-
-
-        def max_value(gameState, agentIndex, depth):
-            val = -1000000000
-            if gameState.isWin() or gameState.isLose():
-                return self.evaluationFunction(GameState)
-            # for each successor of state, v = max(v, min_value(successor))
-            for action in gameState.getLegalActions(agentIndex):
-                # print("action:", gameState.generateSuccessor(agentIndex, action))
-                successor = gameState.generateSuccessor(agentIndex, action)
-                val = max(val, min_value(successor, 1, depth))
-            return val
-        
-        
         def min_value(gameState, agentIndex, depth):
-            val = 1000000000
             if gameState.isWin() or gameState.isLose():
-                return self.evaluationFunction(GameState)
+                return self.evaluationFunction(gameState), None
+            v = float("inf")
+            bestAction = None
             for action in gameState.getLegalActions(agentIndex):
-                print("action:", gameState.generateSuccessor(agentIndex, action))
-            
-            return val
+                successor = gameState.generateSuccessor(agentIndex, action)
+                if agentIndex == gameState.getNumAgents() - 1:
+                    val = max_value(successor, 0, depth+1)[0]
+                else:
+                    val = min_value(successor, agentIndex+1, depth)[0]
+                if val < v:
+                    v, bestAction = val, action
+            return v, bestAction
         
-        max_value(gameState, 0, 4)
+        def max_value(gameState, agentIndex, depth):
+            if gameState.isWin() or gameState.isLose() or depth == self.depth:
+                return self.evaluationFunction(gameState), None
+            v = float("-inf")
+            bestAction = None
+            for action in gameState.getLegalActions(agentIndex):
+                successor = gameState.generateSuccessor(agentIndex, action)
+                val = min_value(successor, 1, depth)[0]
+                if val > v:
+                    v, bestAction = val, action
+            return v, bestAction
+        
+        return max_value(gameState, 0, 0)[1]
         util.raiseNotDefined()   
-
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
