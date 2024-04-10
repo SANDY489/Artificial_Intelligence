@@ -15,6 +15,7 @@
 from util import manhattanDistance
 from game import Directions
 import random, util
+import time
 
 from game import Agent
 from pacman import GameState
@@ -194,12 +195,13 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     """
     Your minimax agent with alpha-beta pruning (question 3)
     """
-
+    
     def getAction(self, gameState):
         """
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
+        
         def min_value(gameState, agentIndex, depth, alpha, beta):
             if gameState.isWin() or gameState.isLose():
                 return self.evaluationFunction(gameState), None
@@ -238,6 +240,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         _, action = max_value(gameState, 0, 0, alpha, beta)
         return action
         util.raiseNotDefined()
+    
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
