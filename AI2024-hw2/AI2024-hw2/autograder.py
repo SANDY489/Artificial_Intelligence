@@ -22,6 +22,7 @@ import re
 import sys
 import projectParams
 import random
+import time
 random.seed(0)
 try:
     from pacman import GameState
@@ -338,6 +339,8 @@ def getDisplay(graphicsByDefault, options=None):
 
 
 if __name__ == '__main__':
+    start_cpu_time = time.process_time()
+    
     options = readCommand(sys.argv)
     if options.generateSolutions:
         confirmGenerate()
@@ -360,3 +363,7 @@ if __name__ == '__main__':
                  gsOutput=options.gsOutput,
                  edxOutput=options.edxOutput, muteOutput=options.muteOutput, printTestCase=options.printTestCase,
                  questionToGrade=options.gradeQuestion, display=getDisplay(options.gradeQuestion != None, options))
+    end_cpu_time = time.process_time()
+    cpu_runtime = end_cpu_time - start_cpu_time
+
+    print(f"The code block used {cpu_runtime} seconds of CPU time.")
