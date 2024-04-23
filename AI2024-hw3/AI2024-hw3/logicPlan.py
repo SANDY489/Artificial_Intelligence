@@ -50,6 +50,14 @@ def sentence1() -> Expr:
     (not A) or (not B) or C
     """
     "*** BEGIN YOUR CODE HERE ***"
+    A = logic.Expr('A')
+    B = logic.Expr('B')
+    C = logic.Expr('C')
+
+    op1 = A | B
+    op2 = ~A % (~B | C)
+    op3 = logic.disjoin(~A, ~B, C)
+    return logic.conjoin(op1, op2, op3)
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -63,6 +71,17 @@ def sentence2() -> Expr:
     (not D) implies C
     """
     "*** BEGIN YOUR CODE HERE ***"
+    A = logic.Expr('A')
+    B = logic.Expr('B')
+    C = logic.Expr('C')
+    D = logic.Expr('D')
+    
+    op1 = C % (B | D) 
+    op2 = A >> (~B & ~D) 
+    op3 = ~(B & ~C) >> A  
+    op4 = ~D >> C 
+    
+    return logic.conjoin(op1, op2, op3, op4)
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -80,6 +99,17 @@ def sentence3() -> Expr:
     Pacman is born at time 0.
     """
     "*** BEGIN YOUR CODE HERE ***"
+    a = logic.PropSymbolExpr("PacmanAlive_1")
+    b = logic.PropSymbolExpr("PacmanAlive_0")
+    c = logic.PropSymbolExpr("PacmanBorn_0")
+    d = logic.PropSymbolExpr("PacmanKilled_0")
+    
+    # sentences
+    op0 = (b & ~d) | (~b & c)
+    op1 = a % op0
+    op2 = ~(b & c)  
+    op3 = c  
+    return logic.conjoin(op1, op2, op3) 
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -96,7 +126,15 @@ def findModelUnderstandingCheck() -> Dict[Expr, bool]:
     """
     a = Expr('A')
     "*** BEGIN YOUR CODE HERE ***"
-    print("a.__dict__ is:", a.__dict__) # might be helpful for getting ideas
+    # print("a.__dict__ is:", a.__dict__) # might be helpful for getting ideas
+    class tmpClass:
+        def __init__(self, variable_name: str = 'A'):
+            self.variable_name = variable_name
+        
+        def __repr__(self):
+            return self.variable_name
+    
+    return {tmpClass('a'): True}
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -104,6 +142,12 @@ def entails(premise: Expr, conclusion: Expr) -> bool:
     """Returns True if the premise entails the conclusion and False otherwise.
     """
     "*** BEGIN YOUR CODE HERE ***"
+    entail = ~conclusion & premise
+    
+    if (findModel(entail) == False):
+        return True
+    else:
+        return False
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -112,6 +156,7 @@ def plTrueInverse(assignments: Dict[Expr, bool], inverse_statement: Expr) -> boo
     pl_true may be useful here; see logic.py for its description.
     """
     "*** BEGIN YOUR CODE HERE ***"
+    return pl_true(~inverse_statement, assignments)
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -138,6 +183,7 @@ def atLeastOne(literals: List[Expr]) -> Expr:
     True
     """
     "*** BEGIN YOUR CODE HERE ***"
+    return disjoin(literals) 
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -150,6 +196,11 @@ def atMostOne(literals: List[Expr]) -> Expr:
     itertools.combinations may be useful here.
     """
     "*** BEGIN YOUR CODE HERE ***"
+    combinations = list(itertools.combinations(literals, 2))  #we store all the possible combinations of 2 items from the literals list
+    expression = []
+    for comb in combinations:
+        expression.append(~comb[0] | ~comb[1])
+    return conjoin(expression)
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -161,6 +212,7 @@ def exactlyOne(literals: List[Expr]) -> Expr:
     the expressions in the list is true.
     """
     "*** BEGIN YOUR CODE HERE ***"
+    return (atLeastOne(literals) & atMostOne(literals))
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -194,6 +246,8 @@ def pacmanSuccessorAxiomSingle(x: int, y: int, time: int, walls_grid: List[List[
         return None
     
     "*** BEGIN YOUR CODE HERE ***"
+    return PropSymbolExpr(pacman_str, x, y, time=now) % disjoin(possible_causes)
+    
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -265,7 +319,20 @@ def pacphysicsAxioms(t: int, all_coords: List[Tuple], non_outer_wall_coords: Lis
     pacphysics_sentences = []
 
     "*** BEGIN YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    for (x,y) in all_coords:
+        pacphysics_sentences.append(PropSymbolExpr(wall_str, x, y) >> ~(PropSymbolExpr(pacman_str, x, y, time=t)))
+    
+    wall_list = [logic.PropSymbolExpr(pacman_str, wall_coordinate[0], wall_coordinate[1], time = t) for wall_coordinate in non_outer_wall_coords]
+    pacphysics_sentences.append(exactlyOne(wall_list))
+
+    direction = exactlyOne([logic.PropSymbolExpr(direction, time = t) for direction in DIRECTIONS])
+    pacphysics_sentences.append(direction)
+
+    if (sensorModel): 
+        pacphysics_sentences.append(sensorModel(t, non_outer_wall_coords))
+
+    if (successorAxioms and walls_grid and t):
+        pacphysics_sentences.append(successorAxioms(t, walls_grid, non_outer_wall_coords))
     "*** END YOUR CODE HERE ***"
 
     return conjoin(pacphysics_sentences)
@@ -299,6 +366,14 @@ def checkLocationSatisfiability(x1_y1: Tuple[int, int], x0_y0: Tuple[int, int], 
     KB.append(conjoin(map_sent))
 
     "*** BEGIN YOUR CODE HERE ***"
+    KB.append(pacphysicsAxioms(0, all_coords, non_outer_wall_coords, walls_grid, sensorModel= None, successorAxioms=allLegalSuccessorAxioms))
+    KB.append(pacphysicsAxioms(1, all_coords, non_outer_wall_coords,walls_grid, sensorModel= None, successorAxioms= allLegalSuccessorAxioms))
+    KB.append(PropSymbolExpr(pacman_str, x0, y0, time = 0))
+    KB.append(PropSymbolExpr(action0, time = 0))
+    KB.append(PropSymbolExpr(action1, time=1))
+    model1 = findModel(conjoin([conjoin(KB), PropSymbolExpr(pacman_str, x1, y1, time=1)]))
+    model2 = findModel(conjoin([conjoin(KB), ~PropSymbolExpr(pacman_str, x1, y1, time = 1)]))
+    return (model1, model2)
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -326,6 +401,27 @@ def positionLogicPlan(problem) -> List:
     KB = []
 
     "*** BEGIN YOUR CODE HERE ***"
+    KB.append(logic.PropSymbolExpr(pacman_str, x0, y0, time = 0))
+    
+    for t in range(50):
+        # Print time step
+        print(f"Time step: ", t)
+
+        locations = []
+        for (x,y) in non_wall_coords:
+            locations.append(PropSymbolExpr(pacman_str, x, y, time = t))
+        KB.append(exactlyOne(locations))
+
+        model = findModel(logic.PropSymbolExpr(pacman_str, xg, yg, time = t) & logic.conjoin(KB))
+        if model:
+            return extractActionSequence(model, actions)  # there is, return a sequence of actions from start to goal using extractActionSequence
+
+        act = exactlyOne([logic.PropSymbolExpr(action, time = t) for action in actions])
+        KB.append(act)
+
+        for (x,y) in non_wall_coords:
+            KB.append(pacmanSuccessorAxiomSingle(x, y, time = t+1, walls_grid = walls_grid))
+        
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -355,6 +451,42 @@ def foodLogicPlan(problem) -> List:
     KB = []
 
     "*** BEGIN YOUR CODE HERE ***"
+    KB.append(logic.PropSymbolExpr(pacman_str, x0, y0, time = 0))
+
+    for (x,y) in food:
+        KB.append(PropSymbolExpr(food_str,x,y,time = 0))
+
+    for t in range(50):
+        # Print time step;
+        print(f"Time step: ", t)
+
+        locations = []
+        for (x,y) in non_wall_coords:
+            locations.append(PropSymbolExpr(pacman_str, x, y, time = t))
+        KB.append(exactlyOne(locations))
+
+        foodlist = []   #food variables at time = t
+        for (x,y) in food:
+            foodlist.append(PropSymbolExpr(food_str, x, y, time = t))
+
+        act = exactlyOne([logic.PropSymbolExpr(action, time = t) for action in actions])
+        KB.append(act)
+
+        for (x,y) in non_wall_coords:
+            KB.append(pacmanSuccessorAxiomSingle(x, y, time = t+1, walls_grid = walls))
+        
+        for (x,y) in all_coords:
+            pacman = PropSymbolExpr(pacman_str,x,y,time = t)
+            oldfood = PropSymbolExpr(food_str,x,y,time = t)
+            newfood = PropSymbolExpr(food_str,x,y,time=t+1)
+            KB.append(( pacman | ~oldfood) % ~newfood)
+
+
+        nofood = ~disjoin(foodlist) 
+        model = findModel(nofood & logic.conjoin(KB))
+        if model:
+            return extractActionSequence(model, actions)  # there is, return a sequence of actions from start to goal using extractActionSequence
+
     util.raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
