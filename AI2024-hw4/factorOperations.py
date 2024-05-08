@@ -102,6 +102,26 @@ def joinFactors(factors: List[Factor]):
 
 
     "*** YOUR CODE HERE ***"
+    res_unconditioned = set()
+    res_conditioned = set()
+
+    # get variables in resFactors
+    for factor in factors:
+        res_conditioned.update(factor.conditionedVariables())
+        res_unconditioned.update(factor.unconditionedVariables())
+
+    # eliminate variables in conditioned that also appeared in unconditioned
+    # P(X|Y)P(Y) = P(X Y) the conditioned Y is eliminated
+    res_conditioned = res_conditioned - res_unconditioned
+    resFactor = Factor(res_unconditioned, res_conditioned, list(factors)[0].variableDomainsDict())
+
+    for assignment in resFactor.getAllPossibleAssignmentDicts():
+        prob = 1
+        # P(X Y) is product of P(X Y) in all tables
+        for factor in factors:
+            prob *= factor.getProbability(assignment)
+        resFactor.setProbability(assignment, prob)
+    return resFactor
     raiseNotDefined()
     "*** END YOUR CODE HERE ***"
 
@@ -153,7 +173,23 @@ def eliminateWithCallTracking(callTrackingList=None):
                     "unconditionedVariables: " + str(factor.unconditionedVariables()))
 
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # find assignments eliminates the variable
+        # sum up assignments that contains the variable, and update the sum to the assignment has no variable
+       
+        newUnconditioned = factor.unconditionedVariables() - {eliminationVariable}
+        newConditioned = factor.conditionedVariables()
+        newVariableDomain = factor.variableDomainsDict()
+        del newVariableDomain[eliminationVariable]
+
+        newFactor = Factor(newUnconditioned, newConditioned, newVariableDomain)
+        eliminate_var_domain = factor.variableDomainsDict()[eliminationVariable]
+        for assignment in newFactor.getAllPossibleAssignmentDicts():
+            prob = 0
+            for val in eliminate_var_domain:
+                prob += factor.getProbability({**assignment, eliminationVariable: val})
+            newFactor.setProbability(assignment, prob)
+        return newFactor
+        # raiseNotDefined()
         "*** END YOUR CODE HERE ***"
 
     return eliminate
