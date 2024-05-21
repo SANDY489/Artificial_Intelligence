@@ -85,7 +85,7 @@ with open('dev.jsonl', 'w') as file:
 
 
 #%%
-with open('test.json') as f:
+with open('dev.json') as f:
     data = json.load(f)
 print(data)
 #%% [markdown]
@@ -94,24 +94,60 @@ print(data)
 
 from openai import OpenAI
 client = OpenAI(api_key = openai_gpt_key)
+message_to_save = []
+with open('raw_result.txt', "w") as file:
+    for item in data:
+        completion = client.chat.completions.create(
+        model="ft:gpt-3.5-turbo-0125:iis-academia-sinica::9RD2EKa7",
+        messages=[
+            {"role": "system", "content": "You are a NLP researcher. This is an argument relation detection task. You should determine if there is a Supporting relation from sentence 1 to sentence 2 with output 1, else if it is an Attacking relation from sentence 1 to sentence 2 with output 2, or it does not detect any relationship between sentence 1 and sentence 2 with output 0. Only output one numeric number(0,1,2)."},
+            {"role": "user", "content":  'Sentence 1: '+item[0]+"\n\n"+'Sentence 2: '+item[1]}
+        ]
+        )
+        tmp = completion.choices[0].message
+        # print(tmp)
+        message_to_save = str(tmp)+'\n'
+        # print(message_to_save)
+        file.write(message_to_save)
 
-for item in data:
-    completion = client.chat.completions.create(
-    model="ft:gpt-3.5-turbo-0125:iis-academia-sinica::9RD2EKa7",
-    messages=[
-        {"role": "system", "content": "You are a NLP researcher. This is an argument relation detection task. You should determine if there is a Supporting relation from sentence 1 to sentence 2 with output 1, else if it is an Attacking relation from sentence 1 to sentence 2 with output 2, or it does not detect any relationship between sentence 1 and sentence 2 with output 0. Only output one numeric number(0,1,2)."},
-        {"role": "user", "content":  'Sentence 1: '+item[0]+"\n\n"+'Sentence 2: '+item[1]}
-    ]
-    )
-    message_to_save = completion.choices[0].message
-    print(message_to_save)
 
-
-    
 
 #%% [markdown]
-# wait
+# Process raw result and save to new text file
+import regex as re
+gpt_result = []
+with open('raw_result.txt', "r") as file:
+    content = file.readlines()
+
+for line in content:
+    match = re.search(r"content='(.*?)'", line)
+    if match:
+        content_value = match.group(1)
+        # print(content_value)
+        gpt_result.append(content_value)
+    else:
+        print("Content value not found.")
+
+with open('converted_result.txt', "w") as file:
+    my_string = '\n'.join(map(str, gpt_result))
+    file.write(my_string)
 
 
+# %% [markdown]
+# Calculate F1 score
+from sklearn.metrics import f1_score
+gt_result = []
+with open('dev.json') as f:
+    test_data = json.load(f)
 
+for item in test_data:
+    gt_result.append(item[2])
 
+gpt_result = [int(item) for item in gpt_result]
+gt_result = [int(item) for item in gt_result]
+# print(gpt_result)
+# print(gt_result)
+weighted_f1 = f1_score(gt_result, gpt_result, average='weighted')
+print(f'Weighted F1 Score: {weighted_f1}')
+
+# %%
