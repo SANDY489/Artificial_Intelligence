@@ -147,12 +147,6 @@ gpt_result = [int(item) for item in gpt_result]
 gt_result = [int(item) for item in gt_result]
 # print(gpt_result)
 # print(gt_result)
-micro_f1 = f1_score(gt_result, gpt_result, average='micro')
-print(f'Micro F1 Score: {micro_f1}')
-
-macro_f1 = f1_score(gt_result, gpt_result, average='macro')
-print(f'Macro F1 Score: {macro_f1}')
-
 weighted_f1 = f1_score(gt_result, gpt_result, average='weighted')
 print(f'Weighted F1 Score: {weighted_f1}')
 
