@@ -95,3 +95,19 @@ client.fine_tuning.jobs.create(
 )
 
 
+import anthropic
+
+api_key = '金鑰貼這邊'
+
+client = anthropic.Anthropic( api_key = api_key)
+
+message = client.messages.create(
+    model="claude-3-opus-20240229", # 模型型號
+    max_tokens=1000, # 選用，回傳token的最大長度，避免爆預算
+    messages=[
+        {"role": "user", "content": "這邊輸入要講的話"}
+    ]
+)
+
+print(message.content)
+
