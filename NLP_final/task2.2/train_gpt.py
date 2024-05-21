@@ -133,7 +133,7 @@ with open('converted_result.txt', "w") as file:
     file.write(my_string)
 
 
-# %% [markdown]
+#%% [markdown]
 # Calculate F1 score
 from sklearn.metrics import f1_score
 gt_result = []
