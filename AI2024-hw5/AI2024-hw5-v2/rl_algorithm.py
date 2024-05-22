@@ -11,15 +11,23 @@ class PacmanActionCNN(nn.Module):
         super(PacmanActionCNN, self).__init__()
         # build your own CNN model
         "*** YOUR CODE HERE ***"
-        utils.raiseNotDefined()
+        # utils.raiseNotDefined()
         # this is just an example, you can modify this.
-        self.conv1 = nn.Conv2d(state_dim, 16, kernel_size=8, stride=4)
+        # self.conv1 = nn.Conv2d(state_dim, 16, kernel_size=8, stride=4)
+        self.conv1 = nn.Conv2d(state_dim, 32, kernel_size=8, stride=4)
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=4, stride=2)
+        self.fc1 = nn.Linear(9*9*64, 512)
+        self.fc2 = nn.Linear(512, action_dim)
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
         
         "*** YOUR CODE HERE ***"
-        utils.raiseNotDefined()
+        # utils.raiseNotDefined()
+        x = F.relu(self.conv2(x))
+        x = x.view(x.size(0), -1)
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
         
         return x
 
@@ -111,51 +119,53 @@ class DQN:
             "*** YOUR CODE HERE ***"
             utils.raiseNotDefined()
             # get q-values from network
-            q_value = YOUR_CODE_HERE
+            q_value = self.network(x)
             # get action with maximum q-value
-            action = YOUR_CODE_HERE
+            action = q_value.max(1)[1].item() # Get the action with the highest Q-value
         
         return action
     
     def learn(self):
         "*** YOUR CODE HERE ***"
-        utils.raiseNotDefined()
+        # utils.raiseNotDefined()
         
         # sample a mini-batch from replay buffer
         state, action, reward, next_state, terminated = map(lambda x: x.to(self.device), self.buffer.sample(self.batch_size))
         
         # get q-values from network
-        next_q = YOUR_CODE_HERE
+        next_q = self.target_network(next_state).max(1)[0]
         # td_target: if terminated, only reward, otherwise reward + gamma * max(next_q)
-        td_target = YOUR_CODE_HERE
+        td_target = reward + self.gamma * next_q * (1 - terminated)
         # compute loss with td_target and q-values
-        loss = YOUR_CODE_HERE
+        current_q = self.network(state).gather(1, action.unsqueeze(1)).squeeze(1)
+        loss = F.mse_loss(current_q, td_target)
         
         # initialize optimizer
-        "self.optimizer.YOUR_CODE_HERE"
+        self.optimizer.zero_grad()
         # backpropagation
-        YOUR_CODE_HERE
+        loss.backward()
         # update network
-        "self.optimizer.YOUR_CODE_HERE"
+        self.optimizer.step()
         
-        return {YOUR_CODE_HERE} # return dictionary for logging
+        return {"loss": loss.item()} # return dictionary for logging
     
     def process(self, transition):
         "*** YOUR CODE HERE ***"
-        utils.raiseNotDefined()
+        # utils.raiseNotDefined()
+        state, action, reward, next_state, terminated = transition
         
         result = {}
         self.total_steps += 1
         
         # update replay buffer
-        "self.buffer.YOUR_CODE_HERE"
+        self.buffer.add(state, action, reward, next_state, terminated)
 
         if self.total_steps > self.warmup_steps:
             result = self.learn()
             
         if self.total_steps % self.target_update_interval == 0:
             # update target networ
-            "self.target_network.YOUR_CODE_HERE"
+            self.target_network.load_state_dict(self.network.state_dict())
         
         self.epsilon -= self.epsilon_decay
         return result

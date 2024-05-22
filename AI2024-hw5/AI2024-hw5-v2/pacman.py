@@ -8,10 +8,11 @@ import gymnasium as gym
 import torch
 import imageio
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 from rl_algorithm import DQN
 from custom_env import ImageEnv
-from utils import seed_everything, YOUR_CODE_HERE
+from utils import seed_everything
 import utils
 
 def parse_args():
@@ -51,11 +52,11 @@ def validation(agent, num_evals=5):
         (state, _), done = eval_env.reset(), False
         while not done:
             "*** YOUR CODE HERE ***"
-            utils.raiseNotDefined()
+            # utils.raiseNotDefined()
             # do action from your agent
-            action = YOUR_CODE_HERE
+            action = agent.act(state)
             # get your action feedback from environment
-            next_state, reward, terminated, truncated, info = YOUR_CODE_HERE
+            next_state, reward, terminated, truncated, info = eval_env.step(action)
             
             state = next_state
             scores += reward
@@ -84,6 +85,17 @@ def train(agent, env):
             
             # log info to plot your figure
             "*** YOUR CODE HERE ***"
+            print(f"Step: {agent.total_steps}, AvgScore: {avg_score}, ValueLoss: {result['value_loss']}")
+            
+            # Plotting
+            plt.figure(figsize=(10, 5))
+            plt.plot(history['Step'], history['AvgScore'], label='Average Score')
+            plt.xlabel('Step')
+            plt.ylabel('Average Score')
+            plt.title('Training Progress')
+            plt.legend()
+            plt.savefig(save_dir / 'training_progress.png')
+            plt.close()
             
             # save model
             torch.save(agent.network.state_dict(), save_dir / 'pacma_dqn.pt')
