@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-from utils import YOUR_CODE_HERE
+# from utils import YOUR_CODE_HERE
 import utils
 
 class PacmanActionCNN(nn.Module):
