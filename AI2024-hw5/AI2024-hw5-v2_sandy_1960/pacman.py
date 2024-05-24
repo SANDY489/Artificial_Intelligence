@@ -117,7 +117,7 @@ def train(agent, env):
             plt.close()
             
             # save model
-            torch.save(agent.network.state_dict(), save_dir / 'pacma_dqn.pt')
+            torch.save(agent.network.state_dict(), save_dir / 'pacman_dqn.pt')
             print(f"Step: {agent.total_steps}, AvgScore: {avg_score}, Reward: {reward}, Loss: {result['loss']}") 
 
 def evaluate(agent, eval_env, capture_frames=True):
