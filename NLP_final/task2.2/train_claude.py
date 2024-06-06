@@ -74,7 +74,7 @@ with open('raw_result_claude_haiku.txt', "w") as file:
            
 with open('dev.json') as f:
     data = json.load(f)
-with open('raw_result_claude_haiku.txt', "w") as file:
+with open('raw_result2_claude_haiku.txt', "w") as file:
     for item in data:
         sentence1 = item[0]
         sentence2 = item[1]
@@ -99,19 +99,20 @@ with open('raw_result_claude_haiku.txt', "w") as file:
 # Process raw result and save to new text file
 import regex as re
 gpt_result = []
-with open('raw_result.txt', "r") as file:
+with open('raw_result2_claude_haiku.txt', "r") as file:
     content = file.readlines()
 
 for line in content:
-    match = re.search(r"content='(.*?)'", line)
+    match = re.search(r"text='.*?(\d+)'", line)
     if match:
         content_value = match.group(1)
         # print(content_value)
         gpt_result.append(content_value)
     else:
+        gpt_result.append('1')
         print("Content value not found.")
 
-with open('converted_result.txt', "w") as file:
+with open('converted_result2_claude_haiku.txt', "w") as file:
     my_string = '\n'.join(map(str, gpt_result))
     file.write(my_string)
 
@@ -125,7 +126,9 @@ with open('dev.json') as f:
 
 for item in test_data:
     gt_result.append(item[2])
-
+with open('converted_result2_claude_haiku.txt') as f:
+    gpt_result = [int(line.strip()) for line in f]
+    
 gpt_result = [int(item) for item in gpt_result]
 gt_result = [int(item) for item in gt_result]
 # print(gpt_result)
@@ -140,3 +143,5 @@ weighted_f1 = f1_score(gt_result, gpt_result, average='weighted')
 print(f'Weighted F1 Score: {weighted_f1}')
 
 
+
+# %%
