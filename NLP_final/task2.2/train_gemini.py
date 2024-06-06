@@ -43,7 +43,7 @@ with open('raw_result_gemini.txt', "w") as file:
         print(response.text, item[0], item[1])
         message_to_save = response.text+'\n'
         file.write(message_to_save)
-        time.sleep(2)
+        time.sleep(5)
         
 
 #%% [markdown]

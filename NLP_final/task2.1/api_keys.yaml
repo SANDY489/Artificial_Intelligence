@@ -1,0 +1,5 @@
+api_keys:
+- openai_gpt_key: sk-proj-cp0Wa3obJcFqx7m9hilBT3BlbkFJKKdJnxdhjPqufjNNayAJ
+- claude3_key: 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
+- fake: sk-proj-YmvmA1qyqOcJByNnpJlOT3BlbkFJQJwArajhJkNqZzaQ4rGO
+- gemini: AIzaSyA0hpCecKOioE3ybEYTxqJD18QnIdb8OS8

@@ -1,19 +1,11 @@
 0
+Output: {item[2]}
+0
+0
 0
 0
 0
 1
-0
-1
-1
-0
-1
-0
-0
-0
-0
-0
-0
 0
 0
 0
@@ -23,3 +15,2199 @@
 0
 1
 1
+0
+0
+0
+0
+```python
+import numpy as np
+
+def relation_detection(sentence1, sentence2):
+  """
+  Determine the relation between two sentences.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    0 if there is no relation between the sentences, 1 if sentence1 supports
+    sentence2, and 2 if sentence1 attacks sentence2.
+  """
+
+  # Convert the sentences to lowercase and tokenize them.
+  sentence1 = sentence1.lower().split()
+  sentence2 = sentence2.lower().split()
+
+  # Create a list of stop words.
+  stop_words = ["a", "an", "the", "is", "are", "was", "were", "be", "been",
+                 "being", "have", "has", "had", "having", "do", "does", "did",
+                 "doing", "would", "should", "could", "may", "might", "must",
+                 "can", "cannot", "will", "shall", "should", "ought", "and",
+                 "but", "or", "nor", "for", "against", "on", "off", "in", "out",
+                 "over", "under", "above", "below", "to", "from", "by", "with",
+                 "as", "like", "because", "since", "after", "before", "when",
+                 "where", "how", "what", "who", "whom", "whose", "that",
+                 "which", "this", "that", "these", "those", "here", "there",
+                 "everywhere", "anywhere", "nowhere", "some", "any", "all",
+                 "every", "no", "none", "only", "both", "either", "neither",
+                 "few", "many", "most", "less", "more", "much", "little",
+                 "up", "down", "left", "right", "forward", "backward", "away",
+                 "towards"]
+
+  # Remove the stop words from the sentences.
+  sentence1 = [word for word in sentence1 if word not in stop_words]
+  sentence2 = [word for word in sentence2 if word not in stop_words]
+
+  # Create a list of the words that appear in both sentences.
+  common_words = set(sentence1) & set(sentence2)
+
+  # If there are no common words, then there is no relation between the sentences.
+  if len(common_words) == 0:
+    return 0
+
+  # If the first sentence contains more common words than the second sentence,
+  # then the first sentence supports the second sentence.
+  elif len(common_words) > len(sentence2):
+    return 1
+
+  # Otherwise, the first sentence attacks the second sentence.
+  else:
+    return 2
+
+
+# Get the input sentences.
+sentence1 = input("Sentence 1: ")
+sentence2 = input("Sentence 2: ")
+
+# Determine the relation between the sentences.
+relation = relation_detection(sentence1, sentence2)
+
+# Print the relation.
+if relation == 0:
+  print("There is no relation between the sentences.")
+elif relation == 1:
+  print("Sentence 1 supports sentence 2.")
+else:
+  print("Sentence 1 attacks sentence 2.")
+```
+```python
+import numpy as np
+
+def relation_detection(sent1, sent2):
+  """
+  This function takes two sentences as input and returns a numeric value indicating the relationship between the two sentences.
+
+  Args:
+    sent1 (str): The first sentence.
+    sent2 (str): The second sentence.
+
+  Returns:
+    int: A numeric value indicating the relationship between the two sentences.
+  """
+  # Convert the sentences to lowercase and tokenize them.
+  sent1_tokens = sent1.lower().split()
+  sent2_tokens = sent2.lower().split()
+
+  # Create a matrix of the cosine similarities between the tokens in the two sentences.
+  cosine_similarities = np.zeros((len(sent1_tokens), len(sent2_tokens)))
+  for i in range(len(sent1_tokens)):
+    for j in range(len(sent2_tokens)):
+      cosine_similarities[i, j] = cosine_similarity(sent1_tokens[i], sent2_tokens[j])
+
+  # Find the maximum cosine similarity between any two tokens in the two sentences.
+  max_cosine_similarity = np.max(cosine_similarities)
+
+  # If the maximum cosine similarity is greater than 0.5, then the two sentences are considered to be related.
+  if max_cosine_similarity > 0.5:
+    # Determine the type of relationship between the two sentences.
+    if sent1_tokens[-1] == '.' and sent2_tokens[0].isupper():
+      # The first sentence is likely a supporting statement for the second sentence.
+      return 1
+    elif sent1_tokens[-1] == '?' and sent2_tokens[0].islower():
+      # The first sentence is likely an attacking statement against the second sentence.
+      return 2
+
+  # If the maximum cosine similarity is not greater than 0.5, then the two sentences are not considered to be related.
+  return 0
+```
+0
+0
+0
+```python
+def detect_relation(item):
+  """
+  Determine if there is a Supporting relation from sentence 1 to sentence 
+  2 with output 1, else if it is an Attacking relation from sentence 1 to 
+  sentence 2 with output 2, or it does not detect any relationship between 
+  sentence 1 and sentence 2 with output 0.
+  Only output one numeric number(0,1,2).
+
+  Args:
+    item: A list of two sentences.
+
+  Returns:
+    0 if no relation, 1 if Supporting, and 2 if Attacking.
+  """
+
+  sentence1 = item[0].lower()
+  sentence2 = item[1].lower()
+
+  # Supporting relations
+  if "support" in sentence1 or "agree" in sentence1 or "evidence" in sentence1:
+    return 1
+  if "support" in sentence2 or "agree" in sentence2 or "evidence" in sentence2:
+    return 1
+
+  # Attacking relations
+  if "attack" in sentence1 or "disagree" in sentence1 or "criticize" in sentence1:
+    return 2
+  if "attack" in sentence2 or "disagree" in sentence2 or "criticize" in sentence2:
+    return 2
+
+  # No relation
+  return 0
+```
+0
+0
+0
+0
+```python
+def detect_relation(sentence1, sentence2):
+  """Detects the argument relation between two sentences.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    0 if there is no relation, 1 if there is a Supporting relation,
+    2 if there is an Attacking relation.
+  """
+
+  # Tokenize the sentences.
+  tokens1 = nltk.word_tokenize(sentence1)
+  tokens2 = nltk.word_tokenize(sentence2)
+
+  # Stem the tokens.
+  stemmer = nltk.stem.PorterStemmer()
+  stemmed_tokens1 = [stemmer.stem(token) for token in tokens1]
+  stemmed_tokens2 = [stemmer.stem(token) for token in tokens2]
+
+  # Create a bag of words for each sentence.
+  bow1 = Counter(stemmed_tokens1)
+  bow2 = Counter(stemmed_tokens2)
+
+  # Compute the cosine similarity between the two bags of words.
+  similarity = cosine_similarity(bow1, bow2)
+
+  # Determine the relation between the two sentences.
+  if similarity >= 0.5:
+    return 1  # Supporting
+  elif similarity <= -0.5:
+    return 2  # Attacking
+  else:
+    return 0  # No relation
+```
+2
+0
+0
+0
+0
+{item[2]}
+```python
+def relation_detection(sent1, sent2):
+  """
+  This function detects the argument relation between two sentences.
+
+  Args:
+    sent1: The first sentence.
+    sent2: The second sentence.
+
+  Returns:
+    1 if there is a Supporting relation from sentence 1 to sentence 2,
+    2 if there is an Attacking relation from sentence 1 to sentence 2,
+    0 if there is no relation between sentence 1 and sentence 2.
+  """
+
+  # Tokenize the sentences.
+  sent1_tokens = nltk.word_tokenize(sent1)
+  sent2_tokens = nltk.word_tokenize(sent2)
+
+  # Stem the tokens.
+  sent1_stems = [PorterStemmer().stem(token) for token in sent1_tokens]
+  sent2_stems = [PorterStemmer().stem(token) for token in sent2_tokens]
+
+  # Create a set of the stems from sentence 1.
+  sent1_stems_set = set(sent1_stems)
+
+  # Check if any of the stems from sentence 2 are in the set of stems from sentence 1.
+  if any(stem in sent1_stems_set for stem in sent2_stems):
+    # If there is at least one stem in common, then the relation is Supporting.
+    return 1
+
+  # Check if any of the stems from sentence 1 are in the set of stems from sentence 2.
+  elif any(stem in sent2_stems_set for stem in sent1_stems):
+    # If there is at least one stem in common, then the relation is Attacking.
+    return 2
+
+  # If there are no stems in common, then the relation is None.
+  else:
+    return 0
+
+
+# Get the user input.
+sent1 = input("Sentence 1: ")
+sent2 = input("Sentence 2: ")
+
+# Detect the argument relation.
+relation = relation_detection(sent1, sent2)
+
+# Print the relation.
+print(relation)
+```
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+{{item[2]}}
+0
+0
+0
+```python
+import nltk
+import sklearn
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+# Load the data
+data = nltk.corpus.snli.sents()
+
+# Create a TF-IDF vectorizer
+vectorizer = TfidfVectorizer()
+
+# Vectorize the data
+X = vectorizer.fit_transform(data)
+
+# Create a logistic regression classifier
+classifier = LogisticRegression()
+
+# Split the data into a training set and a test set
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Train the classifier
+classifier.fit(X_train, y_train)
+
+# Evaluate the classifier
+score = classifier.score(X_test, y_test)
+
+# Print the score
+print(score)
+```
+2
+1
+{item[2]}
+0
+0
+1
+1
+```python
+def detect_relation(item):
+  """
+  Detect the relation between two sentences.
+
+  Args:
+    item: A pair of sentences.
+
+  Returns:
+    0 if no relation is detected, 1 if the relation is Supporting, and 2 if the relation is Attacking.
+  """
+
+  # Preprocess the sentences.
+  sentence1 = item[0].lower().replace(".", "").replace(",", "")
+  sentence2 = item[1].lower().replace(".", "").replace(",", "")
+
+  # Check if the sentences are the same.
+  if sentence1 == sentence2:
+    return 0
+
+  # Check if sentence1 supports sentence2.
+  if sentence1 in sentence2:
+    return 1
+
+  # Check if sentence1 attacks sentence2.
+  if "not" in sentence1 and sentence2 in sentence1:
+    return 2
+
+  # No relation detected.
+  return 0
+```
+0
+1
+0
+0
+{item[2]}
+```python
+import nltk
+from nltk.corpus import stopwords
+
+# Download the necessary NLTK data
+nltk.download('punkt')
+nltk.download('stopwords')
+
+# Define the stopwords
+stop_words = set(stopwords.words('english'))
+
+# Function to determine the argument relation between two sentences
+def argument_relation(sentence1, sentence2):
+  # Preprocess the sentences
+  sentence1 = sentence1.lower()
+  sentence2 = sentence2.lower()
+  sentence1 = ' '.join([word for word in sentence1.split() if word not in stop_words])
+  sentence2 = ' '.join([word for word in sentence2.split() if word not in stop_words])
+
+  # Check if sentence1 supports sentence2
+  if sentence1 in sentence2:
+    return 1
+
+  # Check if sentence1 attacks sentence2
+  if sentence2 in sentence1:
+    return 2
+
+  # No relation detected
+  return 0
+
+# Get the input sentences
+sentence1 = input("Sentence 1: ")
+sentence2 = input("Sentence 2: ")
+
+# Determine the argument relation
+relation = argument_relation(sentence1, sentence2)
+
+# Print the output
+print(relation)
+```
+```python
+def detect_relation(sentence1, sentence2):
+  """Detects the relation between two sentences.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    0 if no relation is detected, 1 if sentence2 supports sentence1, 2 if
+    sentence2 attacks sentence1.
+  """
+
+  # Tokenize the sentences.
+  tokens1 = nltk.word_tokenize(sentence1)
+  tokens2 = nltk.word_tokenize(sentence2)
+
+  # Stem the tokens.
+  stemmer = nltk.stem.PorterStemmer()
+  stemmed_tokens1 = [stemmer.stem(token) for token in tokens1]
+  stemmed_tokens2 = [stemmer.stem(token) for token in tokens2]
+
+  # Create a bag-of-words model for each sentence.
+  bow1 = Counter(stemmed_tokens1)
+  bow2 = Counter(stemmed_tokens2)
+
+  # Compute the cosine similarity between the two bag-of-words models.
+  similarity = cosine_similarity(bow1, bow2)
+
+  # If the similarity is high, then the sentences are related.
+  if similarity > 0.5:
+    # Determine the relation between the sentences.
+    if sentence2.lower().startswith("however") or sentence2.lower().startswith("but"):
+      return 2
+    else:
+      return 1
+  else:
+    # No relation was detected.
+    return 0
+```
+1
+1
+0
+0
+0
+0
+1
+0
+```python
+def detect_relation(sentence1, sentence2):
+    # Apply NLP techniques to determine the argument relation between sentence1 and sentence2
+    # Return 0 for no relation, 1 for Supporting, and 2 for Attacking
+    if sentence1.find("but") != -1 or sentence1.find("however") != -1:
+        return 2  # sentence1 attacks sentence2
+    elif sentence2.find("because") != -1 or sentence2.find("since") != -1:
+        return 1  # sentence2 supports sentence1
+    else:
+        return 0
+
+# Example usage
+item = ["The sky is blue.", "Because it is daytime."]
+relation = detect_relation(item[0], item[1])  # 1 for Supporting relation
+```
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+1
+0
+1
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+1
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+2
+2
+0
+0
+1
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+0
+{item[2]}
+```python
+def detect_argument_relation(sentence1, sentence2):
+  # Import the necessary NLP libraries
+  import spacy
+
+  # Load the spaCy English language model
+  nlp = spacy.load("en_core_web_sm")
+
+  # Parse the sentences using spaCy
+  doc1 = nlp(sentence1)
+  doc2 = nlp(sentence2)
+
+  # Get the dependency trees of the sentences
+  dep_tree1 = list(doc1.sents)[0].root.children
+  dep_tree2 = list(doc2.sents)[0].root.children
+
+  # Check if the sentences have a supporting relation
+  supporting = False
+  for token1 in dep_tree1:
+    for token2 in dep_tree2:
+      if token1.dep_ == "nsubj" and token2.dep_ == "dobj" and token1.head == token2.head:
+        supporting = True
+        break
+
+  # Check if the sentences have an attacking relation
+  attacking = False
+  for token1 in dep_tree1:
+    for token2 in dep_tree2:
+      if token1.dep_ == "nsubj" and token2.dep_ == "dobj" and token1.head != token2.head:
+        attacking = True
+        break
+
+  # Return the appropriate output
+  if supporting:
+    return 1
+  elif attacking:
+    return 2
+  else:
+    return 0
+```
+0
+0
+2
+```python
+def get_relation(sentence1, sentence2):
+  """
+  Determine the relation between two sentences.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    0 if no relation is detected, 1 if sentence1 supports sentence2, and 2 if sentence1 attacks sentence2.
+  """
+
+  # Check if sentence1 supports sentence2.
+
+  if "supports" in sentence1 and sentence2 in sentence1:
+    return 1
+
+  # Check if sentence1 attacks sentence2.
+
+  if "attacks" in sentence1 and sentence2 in sentence1:
+    return 2
+
+  # No relation detected.
+
+  return 0
+```
+0
+0
+0
+0
+0
+1
+0
+0
+0
+2
+0
+0
+0
+0
+Output: {item[2]}
+1
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+1
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+1
+0
+0
+1
+0
+0
+0
+0
+```python
+import numpy as np
+import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
+import math
+
+def detect_relation(sentence1, sentence2):
+  """
+  This function takes two sentences as input and returns the relation between them.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    0 if there is no relation between the two sentences, 1 if the second sentence supports the first sentence, and 2 if the second sentence attacks the first sentence.
+  """
+
+  # Tokenize the sentences.
+  tokens1 = sentence1.split()
+  tokens2 = sentence2.split()
+  
+  #print(tokens1)
+  #print(tokens2)
+
+  # Remove punctuation.
+  for i in range(len(tokens1)):
+    if tokens1[i].endswith(".") or tokens1[i].endswith(",") or tokens1[i].endswith("!") or tokens1[i].endswith("?"):
+      tokens1[i] = tokens1[i][:-1]
+  for i in range(len(tokens2)):
+    if tokens2[i].endswith(".") or tokens2[i].endswith(",") or tokens2[i].endswith("!") or tokens2[i].endswith("?"):
+      tokens2[i] = tokens2[i][:-1]
+
+  #print(tokens1)
+  #print(tokens2)
+
+  # Create a word embedding matrix.
+  embeddings_index = {}
+  with open('glove.6B.50d.txt') as f:
+    for line in f:
+      values = line.split()
+      word = values[0]
+      embedding = np.array(values[1:], dtype=np.float32)
+      embeddings_index[word] = embedding
+
+  embedding_matrix1 = np.zeros((len(tokens1), 50))
+  for i in range(len(tokens1)):
+    if tokens1[i] in embeddings_index:
+      embedding_matrix1[i] = embeddings_index[tokens1[i]]
+
+  embedding_matrix2 = np.zeros((len(tokens2), 50))
+  for i in range(len(tokens2)):
+    if tokens2[i] in embeddings_index:
+      embedding_matrix2[i] = embeddings_index[tokens2[i]]
+
+  # Compute the cosine similarity between the two sentences.
+  print(embedding_matrix1)
+  print(embedding_matrix2)
+  cosine_similarity = cosine_similarity(embedding_matrix1, embedding_matrix2)
+
+  #print(cosine_similarity)
+
+  # Determine the relation between the two sentences.
+  relation = 0
+  if cosine_similarity > 0.5:
+    relation = 1
+  elif cosine_similarity < -0.5:
+    relation = 2
+
+  return relation
+```
+0
+Output: {item[2]}
+0
+```python
+def argument_relation_detection(item):
+    sent1, sent2 = item[0], item[1]
+    # Pre-trained model or rule-based approach
+    if sent1.endswith(sent2):
+        return 1
+    elif 'but' in sent1 and sent2 in sent1:
+        return 2
+    else: 
+        return 0
+```
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+2
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+0
+1
+0
+0
+1
+0
+1
+0
+0
+0
+```python
+def relation_detection(sentence1, sentence2):
+  """
+  This function takes two sentences as input and returns the relation between them.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    1 if the relation is Supporting, 2 if the relation is Attacking, 0 otherwise.
+  """
+
+  # Tokenize and stem the sentences.
+  sentence1_tokens = nltk.word_tokenize(sentence1)
+  sentence2_tokens = nltk.word_tokenize(sentence2)
+
+  sentence1_stems = [nltk.stem.PorterStemmer().stem(token) for token in sentence1_tokens]
+  sentence2_stems = [nltk.stem.PorterStemmer().stem(token) for token in sentence2_tokens]
+
+  # Create a bag-of-words representation of the sentences.
+  sentence1_bow = Counter(sentence1_stems)
+  sentence2_bow = Counter(sentence2_stems)
+
+  # Compute the cosine similarity between the sentences.
+  similarity = cosine_similarity(sentence1_bow, sentence2_bow)
+
+  # Determine the relation between the sentences.
+  if similarity > 0.5:
+    return 1  # Supporting
+  elif similarity < -0.5:
+    return 2  # Attacking
+  else:
+    return 0  # No relation
+```
+1
+0
+0
+0
+0
+0
+0
+0
+{item[2]}
+0
+0
+0
+0
+1
+0
+1
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+```python
+def argument_relation_detection(item):
+    # Use your NLP model to detect the argument relation between sentence 1 and sentence 2.
+    # Return 1 if it is a Supporting relation, 2 if it is an Attacking relation, or 0 if it does not detect any relationship.
+    if sentence1_supports_sentence2(item[0], item[1]):
+        return 1
+    elif sentence1_attacks_sentence2(item[0], item[1]):
+        return 2
+    else:
+        return 0
+```
+1
+0
+0
+0
+0
+0
+0
+0
+```python
+import numpy as np
+import pandas as pd
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
+# Load the tokenizer and model
+tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
+model = AutoModelForSequenceClassification.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
+
+# Define the function to detect the argument relation
+def detect_argument_relation(sentence1, sentence2):
+  # Tokenize the sentences
+  inputs = tokenizer(sentence1, sentence2, return_tensors="pt")
+
+  # Get the model's output
+  outputs = model(**inputs)
+
+  # Get the predicted labels
+  logits = outputs.logits
+
+  # Get the index of the highest predicted label
+  predicted_label = np.argmax(logits).item()
+
+  # Return the argument relation
+  if predicted_label == 0:
+    return 1
+  elif predicted_label == 1:
+    return 2
+  else:
+    return 0
+
+# Get the user input
+sentence1 = input("Sentence 1: ")
+sentence2 = input("Sentence 2: ")
+
+# Detect the argument relation
+argument_relation = detect_argument_relation(sentence1, sentence2)
+
+# Print the argument relation
+print(argument_relation)
+```
+0
+1
+1
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+2
+0
+0
+0
+0
+0
+0
+0
+0
+2
+0
+0
+0
+2
+0
+0
+0
+```python
+import nltk
+from nltk.corpus import sentiwordnet as swn
+from nltk.tokenize import word_tokenize
+
+def get_sentiment(sentence):
+  """
+  Calculate the sentiment of a sentence using SentiWordNet.
+
+  Args:
+    sentence (str): The sentence to analyze.
+
+  Returns:
+    int: The sentiment of the sentence, where 1 is positive, 0 is neutral, and -1 is negative.
+  """
+
+  sentiment = 0
+  tokens = word_tokenize(sentence)
+  for token in tokens:
+    synsets = list(swn.senti_synsets(token))
+    if synsets:
+      sentiment += synsets[0].pos_score() - synsets[0].neg_score()
+
+  return 1 if sentiment > 0 else (-1 if sentiment < 0 else 0)
+
+
+def get_relation(sentence1, sentence2):
+  """
+  Determine the relation between two sentences.
+
+  Args:
+    sentence1 (str): The first sentence.
+    sentence2 (str): The second sentence.
+
+  Returns:
+    int: The relation between the two sentences, where 1 is Supporting, 2 is Attacking, and 0 is None.
+  """
+
+  sentiment1 = get_sentiment(sentence1)
+  sentiment2 = get_sentiment(sentence2)
+
+  if sentiment1 == sentiment2:
+    return 1
+  elif sentiment1 != sentiment2:
+    return 2
+  else:
+    return 0
+
+
+if __name__ == "__main__":
+  sentence1 = "I love this movie."
+  sentence2 = "The acting is superb."
+
+  relation = get_relation(sentence1, sentence2)
+
+  print(relation)
+```
+{item[2]}
+1
+0
+0
+0
+0
+1
+0
+1
+0
+{item[2]}
+0
+0
+0
+0
+0
+0
+{item[2]}
+1
+0
+0
+```python
+def relate(item):
+        # item[0] is the first sentence 
+        # item[1] is the second sentence
+        # return 0 if no relation, 1 if supporting, 2 if attacking
+        
+        # First, convert both sentences to lowercase and remove all punctuation.
+        sentence1 = item[0].lower().replace(".", "").replace(",", "").replace("!", "").replace("?", "").replace(":", "").replace(";", "").split()
+        sentence2 = item[1].lower().replace(".", "").replace(",", "").replace("!", "").replace("?", "").replace(":", "").replace(";", "").split()
+        
+        # Next, check if sentence2 contains any words that are negations.
+        negations = ["no", "not", "never", "none", "nobody", "nothing", "nowhere", "neither", "nor"]
+        if any(negation in sentence2 for negation in negations):
+            # If sentence2 contains a negation, then it is attacking sentence1.
+            return 2
+        
+        # If sentence2 does not contain any negations, then check if it contains any words that are positive.
+        positives = ["yes", "indeed", "of course", "sure", "absolutely", "definitely", "certainly"]
+        if any(positive in sentence2 for positive in positives):
+            # If sentence2 contains a positive, then it is supporting sentence1.
+            return 1
+        
+        # If sentence2 does not contain any negations or positives, then there is no relation between sentence1 and sentence2.
+        return 0
+```
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+{item[2]}
+0
+0
+0
+0
+0
+0
+0
+0
+```python
+def relation_detection(sentence1, sentence2):
+  """
+  This function takes two sentences as input and determines if there is a Supporting relation from sentence 1 to sentence 2, an Attacking relation from sentence 1 to sentence 2, or no relation between the two sentences.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    1 if there is a Supporting relation from sentence 1 to sentence 2, 2 if there is an Attacking relation from sentence 1 to sentence 2, or 0 if there is no relation between the two sentences.
+  """
+
+  # Preprocess the sentences.
+  sentence1 = sentence1.lower()
+  sentence2 = sentence2.lower()
+
+  # Create a list of supporting keywords.
+  supporting_keywords = ["support", "agree", "endorse", "confirm", "validate"]
+
+  # Create a list of attacking keywords.
+  attacking_keywords = ["oppose", "disagree", "reject", "deny", "refute"]
+
+  # Check if there is a supporting keyword in sentence 1 and a supporting keyword in sentence 2.
+  if any(keyword in sentence1 for keyword in supporting_keywords) and any(keyword in sentence2 for keyword in supporting_keywords):
+    return 1
+
+  # Check if there is an attacking keyword in sentence 1 and an attacking keyword in sentence 2.
+  if any(keyword in sentence1 for keyword in attacking_keywords) and any(keyword in sentence2 for keyword in attacking_keywords):
+    return 2
+
+  # Otherwise, there is no relation between the two sentences.
+  return 0
+```
+1
+0
+2
+0
+0
+0
+0
+0
+1
+1
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+1
+0
+1
+0
+1
+0
+0
+0
+0
+0
+1
+```python
+import numpy as np
+import pandas as pd
+import transformers
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Load the data
+train_data = pd.read_csv('argument_relation_detection_dataset.csv')
+
+# Tokenize the data
+train_data['sentence1'] = train_data['sentence1'].apply(lambda x: transformers.AutoTokenizer.from_pretrained('bert-base-uncased').tokenize(x))
+train_data['sentence2'] = train_data['sentence2'].apply(lambda x: transformers.AutoTokenizer.from_pretrained('bert-base-uncased').tokenize(x))
+
+# Convert the data to a format that the model can understand
+train_data['input_ids'] = train_data[['sentence1', 'sentence2']].apply(lambda x: [transformers.AutoTokenizer.from_pretrained('bert-base-uncased').convert_tokens_to_ids(x[0]) + [101], transformers.AutoTokenizer.from_pretrained('bert-base-uncased').convert_tokens_to_ids(x[1]) + [102]], axis=1)
+
+# Create the model
+model = LogisticRegression()
+
+# Train the model
+model.fit(train_data['input_ids'], train_data['label'])
+
+# Evaluate the model
+test_data = pd.read_csv('argument_relation_detection_test_dataset.csv')
+
+# Tokenize the data
+test_data['sentence1'] = test_data['sentence1'].apply(lambda x: transformers.AutoTokenizer.from_pretrained('bert-base-uncased').tokenize(x))
+test_data['sentence2'] = test_data['sentence2'].apply(lambda x: transformers.AutoTokenizer.from_pretrained('bert-base-uncased').tokenize(x))
+
+# Convert the data to a format that the model can understand
+test_data['input_ids'] = test_data[['sentence1', 'sentence2']].apply(lambda x: [transformers.AutoTokenizer.from_pretrained('bert-base-uncased').convert_tokens_to_ids(x[0]) + [101], transformers.AutoTokenizer.from_pretrained('bert-base-uncased').convert_tokens_to_ids(x[1]) + [102]], axis=1)
+
+# Predict the labels
+predictions = model.predict(test_data['input_ids'])
+
+# Evaluate the model
+accuracy = accuracy_score(test_data['label'], predictions)
+print(accuracy)
+
+# Function to determine the relationship between two sentences
+def relation_detection(sentence1, sentence2):
+
+    # Tokenize the sentences
+    sentence1 = transformers.AutoTokenizer.from_pretrained('bert-base-uncased').tokenize(sentence1)
+    sentence2 = transformers.AutoTokenizer.from_pretrained('bert-base-uncased').tokenize(sentence2)
+
+    # Convert the sentences to a format that the model can understand
+    input_ids = [transformers.AutoTokenizer.from_pretrained('bert-base-uncased').convert_tokens_to_ids(sentence1) + [101], transformers.AutoTokenizer.from_pretrained('bert-base-uncased').convert_tokens_to_ids(sentence2) + [102]]
+
+    # Predict the relationship
+    prediction = model.predict([input_ids])
+
+    # Return the relationship
+    return prediction[0]
+
+
+# Test the function
+sentence1 = "The government should provide healthcare for all citizens."
+sentence2 = "Healthcare is a right, not a privilege."
+print(relation_detection(sentence1, sentence2))
+
+sentence1 = "The death penalty is cruel and unusual punishment."
+sentence2 = "The death penalty is a necessary evil."
+print(relation_detection(sentence1, sentence2))
+
+sentence1 = "Climate change is a hoax."
+sentence2 = "Climate change is real and it is happening now."
+print(relation_detection(sentence1, sentence2))
+```
+```python
+def detect_relation(item):
+  sentence1 = item[0].lower()
+  sentence2 = item[1].lower()
+
+  if "because" in sentence1 and sentence2 in sentence1:
+    return 1
+  elif "however" in sentence1 and sentence2 in sentence1:
+    return 2
+  else:
+    return 0
+```
+0
+0
+0
+2
+0
+0
+2
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1
+1
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+{item[2]}
+0
+```python
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+def detect_argument_relation(s1, s2):
+  """Detects the argument relation between two sentences.
+
+  Args:
+    s1: The first sentence.
+    s2: The second sentence.
+
+  Returns:
+    The argument relation between the two sentences:
+    1 for Supporting, 2 for Attacking, 0 for Other.
+  """
+
+  # Tokenize and stem the sentences.
+  # stemmer = PorterStemmer()
+  # s1 = ' '.join([stemmer.stem(t) for t in s1.split()])
+  # s2 = ' '.join([stemmer.stem(t) for t in s2.split()])
+
+  # Create a TF-IDF vectorizer.
+  vectorizer = TfidfVectorizer()
+
+  # Fit the vectorizer to the sentences.
+  X = vectorizer.fit_transform([s1, s2])
+
+  # Calculate the cosine similarity between the sentences.
+  similarity = cosine_similarity(X[0], X[1])
+
+  # Threshold the cosine similarity to determine the argument relation.
+  if similarity > 0.5:
+    return 1
+  elif similarity < -0.5:
+    return 2
+  else:
+    return 0
+
+
+# Test the argument relation detection function.
+s1 = "The Affordable Care Act is a disaster."
+s2 = "The Affordable Care Act has helped millions of Americans."
+print(detect_argument_relation(s1, s2))  # 2
+
+s1 = "Climate change is a hoax."
+s2 = "Climate change is real and it is happening now."
+print(detect_argument_relation(s1, s2))  # 2
+
+s1 = "Donald Trump is a great president."
+s2 = "Donald Trump is a dangerous demagogue."
+print(detect_argument_relation(s1, s2))  # 2
+
+s1 = "The death penalty is wrong."
+s2 = "The death penalty is a just punishment for certain crimes."
+print(detect_argument_relation(s1, s2))  # 2
+
+s1 = "Abortion should be legal."
+s2 = "Abortion is murder."
+print(detect_argument_relation(s1, s2))  # 2
+
+s1 = "Gun control is necessary to reduce gun violence."
+s2 = "Gun control is a violation of the Second Amendment."
+print(detect_argument_relation(s1, s2))  # 2
+
+s1 = "The government should provide healthcare for all Americans."
+s2 = "The government should not be involved in healthcare."
+print(detect_argument_relation(s1, s2))  # 2
+
+s1 = "We should invest in renewable energy."
+s2 = "Renewable energy is too expensive."
+print(detect_argument_relation(s1, s2))  # 2
+
+s1 = "We should raise the minimum wage."
+s2 = "Raising the minimum wage will hurt businesses."
+print(detect_argument_relation(s1, s2))  # 2
+
+s1 = "We should increase taxes on the wealthy."
+s2 = "Increasing taxes on the wealthy will stifle economic growth."
+print(detect_argument_relation(s1, s2))  # 2
+```
+0
+0
+0
+0
+0
+0
+2
+0
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+```python
+def detect_argument_relation(sentence1, sentence2):
+  """
+  Detect the argument relation between two sentences.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    0 if no relation is detected, 1 if sentence2 supports sentence1, 2 if sentence2 attacks sentence1.
+  """
+
+  # Tokenize and stem the sentences.
+  sentence1_tokens = nltk.word_tokenize(sentence1.lower())
+  sentence1_stems = [nltk.stem.PorterStemmer().stem(token) for token in sentence1_tokens]
+  sentence2_tokens = nltk.word_tokenize(sentence2.lower())
+  sentence2_stems = [nltk.stem.PorterStemmer().stem(token) for token in sentence2_tokens]
+
+  # Check if sentence2 supports sentence1.
+  if set(sentence2_stems).issubset(set(sentence1_stems)):
+    return 1
+
+  # Check if sentence2 attacks sentence1.
+  if set(sentence1_stems).issubset(set(sentence2_stems)):
+    return 2
+
+  # No relation detected.
+  return 0
+
+```
+1
+0
+0
+1
+0
+0
+0
+```python
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.pipeline import make_pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler
+
+def detect_relation(sentence1, sentence2):
+  # Preprocess the sentences
+  sentences = [sentence1, sentence2]
+  vectorizer = TfidfVectorizer()
+  X = vectorizer.fit_transform(sentences)
+
+  # Create the feature transformer
+  feature_transformer = ColumnTransformer(
+    transformers=[
+      ('tfidf', StandardScaler(), 'tfidf')
+    ]
+  )
+
+  # Create the model
+  model = make_pipeline(feature_transformer, LogisticRegression())
+
+  # Train the model
+  y = np.array([0, 1, 2])
+  model.fit(X, y)
+
+  # Predict the relation
+  relation = model.predict([X[0]])[0]
+
+  return relation
+```
+0
+0
+0
+0
+1
+1
+0
+0
+1
+0
+0
+0
+0
+2
+0
+0
+0
+0
+1
+```python
+import nltk
+
+def detect_relation(sentence1, sentence2):
+    """
+    This function detects the relation between two sentences.
+
+    Args:
+        sentence1 (str): The first sentence.
+        sentence2 (str): The second sentence.
+
+    Returns:
+        int: 0 if no relation is detected, 1 if a supporting relation is detected, 2 if an attacking relation is detected.
+    """
+
+    # Tokenize the sentences.
+    sentence1_tokens = nltk.word_tokenize(sentence1)
+    sentence2_tokens = nltk.word_tokenize(sentence2)
+
+    # Stem the tokens.
+    sentence1_stems = [nltk.stem.PorterStemmer().stem(token) for token in sentence1_tokens]
+    sentence2_stems = [nltk.stem.PorterStemmer().stem(token) for token in sentence2_tokens]
+
+    # Create a list of all the possible relations.
+    relations = [
+        "supporting",
+        "attacking",
+        "no_relation",
+    ]
+
+    # Create a list of all the possible relation words.
+    relation_words = [
+        "support",
+        "support",
+        "agree",
+        "endorse",
+        "confirm",
+        "verify",
+        "attack",
+        "oppose",
+        "disagree",
+        "contradict",
+        "refute",
+    ]
+
+    # Check if any of the relation words are present in the sentences.
+    for relation_word in relation_words:
+        if relation_word in sentence1_stems and relation_word in sentence2_stems:
+            return relations.index(relation_word) + 1
+
+    # If no relation words are present, return "no_relation".
+    return 0
+
+# Example usage.
+sentence1 = "The government should provide financial assistance to low-income families."
+sentence2 = "Low-income families need financial assistance from the government."
+relation = detect_relation(sentence1, sentence2)
+print(relation)  # 1 (supporting)
+```
+0
+0
+```
+1
+```
+0
+1
+0
+0
+0
+2
+0
+0
+```python
+def detect_argument_relation(sentence1, sentence2):
+  """
+  This function detects the argument relation between two sentences.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    0: No relation detected.
+    1: Supporting relation detected.
+    2: Attacking relation detected.
+  """
+
+  # Load the spaCy English language model.
+  nlp = spacy.load("en_core_web_sm")
+
+  # Parse the sentences.
+  doc1 = nlp(sentence1)
+  doc2 = nlp(sentence2)
+
+  # Get the dependency trees of the sentences.
+  dep_tree1 = doc1.dependency_parse()
+  dep_tree2 = doc2.dependency_parse()
+
+  # Find the root of the dependency tree for the first sentence.
+  root1 = dep_tree1[0]
+
+  # Find the dependency relation between the root of the first sentence and the first token of the second sentence.
+  relation = dep_tree2[doc2[0].head.i][doc2[0]]
+
+  # Determine the argument relation based on the dependency relation.
+  if relation == "nsubj":
+    return 1  # Supporting relation
+  elif relation == "neg":
+    return 2  # Attacking relation
+  else:
+    return 0  # No relation detected
+```
+1
+0
+0
+```python
+import numpy as np
+import pandas as pd
+import argparse
+import os
+import sys
+import re
+import json
+import time
+import spacy
+from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import normalize
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
+
+sys.path.append(os.getcwd())
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--test_file", type=str, default='data/test.json')
+parser.add_argument("--model_path", type=str, default='outputs/')
+args = parser.parse_args()
+
+# Load spaCy
+nlp = spacy.load('en_core_web_lg')
+
+# Load pretrained sentence encoder 
+model = AutoModelForSequenceClassification.from_pretrained("paraphrase-MiniLM-L6-v2")
+tokenizer = AutoTokenizer.from_pretrained("paraphrase-MiniLM-L6-v2")
+
+# Replace the polarizing words in the word list with neutral words 
+def replacePolar(w):
+
+	degree_words = ["absolutely", "amazingly", "completely", "entirely", "especially", "exceptionally", "extraordinarily", "greatly", "highly", "hugely", "immensely", "incredibly", "intensely", "particularly", "remarkably", "substantially", "terribly", "thoroughly", "tremendously", "unbelievably", "utterly"]
+
+	if w in degree_words: 
+		return "very"
+
+	return w
+
+# Check if one word is the negation of another
+def neg(w1, w2):
+	negations = ["aint", "arent", "cannot", "cant", "couldnt", "darent", "didnt", "doesnt", "ain't", "aren't", "can't", "couldn't", "daren't", "didn't", "doesn't", "dont", "hadnt", "hasnt", "havent", "isnt", "mightnt", "mustnt", "neednt", "never", "not", "oughtnt", "shant", "shouldnt", "wasnt", "werent", "wont", "wouldnt", "don't", "hadn't", "hasn't", "haven't", "isn't", "mightn't", "mustn't", "needn't", "oughtn't", "shan't", "shouldn't", "wasn't", "weren't", "won't", "wouldn't"]
+
+	if w1 in negations and w2 in negations:
+		return False
+	elif w1 in negations or w2 in negations:
+		return True
+	else:
+		return False
+
+# Tokenize the sentence and identify the sentiment of tokens using spaCy
+def get_sentiment(sentence):
+	doc = nlp(sentence)
+	sentiment = []
+
+	for token in doc:
+		sentiment.append([token.text, token.dep_, token.head.text])
+
+	return sentiment
+
+
+# Compute paraphrase similarity
+def compute_similarity(s1, s2):
+    
+    tokens1 = tokenizer(s1, return_tensors="pt")
+    tokens2 = tokenizer(s2, return_tensors="pt")
+
+    output = model(**tokens1, **tokens2)
+
+    return output.logits.item()
+
+# Generate a paraphrase of s2 that preserves the sentiment of s1
+def generate_paraphrase(s1, s2):
+
+	s1_sentiment = get_sentiment(s1)
+	s2_sentiment = get_sentiment(s2)
+
+	for i, token in enumerate(s2_sentiment):
+		for j, token2 in enumerate(s1_sentiment):
+			if token[0].lower()==token2[0].lower() and token[1]==token2[1] and not neg(token[2].lower(), token2[2].lower()):
+				s2_sentiment[i] = [token2[0].lower(), token[1], token[2].lower()]
+				break
+
+	new_s2 = " ".join([x[0] for x in s2_sentiment])
+	
+	return new_s2
+
+# Check if sentence 1 supports sentence 2
+def is_support(s1, s2):
+
+	# Replace polarizing words with their neutral counterparts
+	new_s1 = " ".join([replacePolar(x) for x in s1.split()])
+	new_s2 = " ".join([replacePolar(x) for x in s2.split()])
+	
+	# Generate a paraphrase of s2 that preserves the sentiment of s1
+	new_s2 = generate_paraphrase(new_s1, new_s2)
+
+	# Compute the similarity between s1 and the new s2
+	similarity = cosine_similarity([new_s1.split()], [new_s2.split()])[0][0]
+
+	# Check if the similarity is above a threshold
+	if similarity > 0.7:
+		return 1
+
+	return 0
+
+# Check if sentence 1 attacks sentence 2
+def is_attack(s1, s2):
+
+	# Replace polarizing words with their neutral counterparts
+	new_s1 = " ".join([replacePolar(x) for x in s1.split()])
+	new_s2 = " ".join([replacePolar(x) for x in s2.split()])
+	
+	# Compute the similarity between s1 and s2
+	similarity = cosine_similarity([new_s1.split()], [new_s2.split()])[0][0]
+
+	# Check if the similarity is below a threshold
+	if similarity < 0.5:
+		return 1
+
+	return 0
+
+# Check if there is a relationship between sentence 1 and sentence 2
+def check_relation(s1, s2):
+
+	# Check if sentence 1 supports sentence 2
+	if is_support(s1, s2):
+		return 1
+
+	# Check if sentence 1 attacks sentence 2
+	elif is_attack(s1, s2):
+		return 2
+
+	# No relationship
+	else:
+		return 0
+
+def main():
+
+    # Load the test data
+    with open(args.test_file, 'r') as f:
+        test_data = json.load(f)
+
+    results = []
+
+    for item in test_data:
+    
+        s1 = item[0]
+        s2 = item[1]
+
+        # Check the relationship between the two sentences
+        relation = check_relation(s1, s2)
+
+        results.append(relation)
+
+    print(json.dumps(results))
+
+if __name__ == "__main__":
+    main()
+```
+1
+0
+0
+0
+0
+0
+0
+```python
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+
+def detect_argument_relation(sentence1, sentence2):
+  """
+  This function detects the argument relation between two sentences.
+
+  Args:
+    sentence1 (str): The first sentence.
+    sentence2 (str): The second sentence.
+
+  Returns:
+    int: 0 if no relation is detected, 1 if a Supporting relation is detected, 2 if an Attacking relation is detected.
+  """
+
+  # Preprocess the sentences
+  sentence1 = preprocess_sentence(sentence1)
+  sentence2 = preprocess_sentence(sentence2)
+  
+
+  # Get the TF-IDF vectors of the sentences
+  vectorizer = TfidfVectorizer()
+  X = vectorizer.fit_transform([sentence1,sentence2])
+
+
+  # Compute the cosine similarity between the vectors
+  cosine_similarity = nltk.cluster.util.cosine_distance(X[0], X[1])
+
+  # Detect the argument relation
+  if cosine_similarity > 0.5:
+    return 1  # Supporting
+  elif cosine_similarity < 0.5:
+    return 2  # Attacking
+  else:
+    return 0  # No relation
+
+def preprocess_sentence(sentence):
+  """
+  This function preprocesses a sentence for argument relation detection.
+
+  Args:
+    sentence (str): The sentence to preprocess.
+
+  Returns:
+    str: The preprocessed sentence.
+  """
+  #print("sentence before preprocess:",sentence)
+
+  # Remove stop words
+  sentence = " ".join([word for word in sentence.split() if word not in stopwords.words("english")])
+  # Stem the words
+  sentence = " ".join([WordNetLemmatizer().lemmatize(word) for word in sentence.split()])
+  
+  #print("sentence after preprocess:",sentence)
+  return sentence
+```
+1
+1
+0
+0
+2
+0
+0
+0
+```python
+def detect_argument_relation(item):
+  
+  # Define the sentence patterns for the relations.
+  supporting_patterns = ["{item[0]} because {item[1]}", "{item[0]} since {item[1]}"]
+  attacking_patterns = ["{item[0]} but {item[1]}", "{item[0]} although {item[1]}"]
+
+  # Iterate over the sentence patterns to detect the relations.
+  for pattern in supporting_patterns:
+    if re.match(pattern.format(item=item), item[0]):
+      return 1
+
+  for pattern in attacking_patterns:
+    if re.match(pattern.format(item=item), item[0]):
+      return 2
+
+  # If no relation is detected, return 0.
+  return 0
+```
+1
+1
+0
+1
+0
+0
+0
+1
+0
+```python
+def detect_argument_relation(item):
+    sentence1 = item[0]
+    sentence2 = item[1]
+
+    # Define attack keywords
+    attack_keywords = ["but", "however", "although", "in contrast", "on the other hand", "nevertheless", "despite"]
+
+    # Define support keywords
+    support_keywords = ["because", "since", "as", "for", "so"]
+
+    # Check if the sentence 1 contains attack keywords
+    for keyword in attack_keywords:
+        if keyword in sentence1:
+            return 2
+
+    # Check if the sentence 1 contains support keywords
+    for keyword in support_keywords:
+        if keyword in sentence1:
+            return 1
+
+    # Otherwise, return 0
+    return 0
+```
+```python
+def detect_relation(sentence1, sentence2):
+    # import necessary libraries 
+    import spacy
+    nlp = spacy.load("en_core_web_sm")
+    # sentence preprocess
+    doc1 = nlp(sentence1)
+    doc2 = nlp(sentence2)
+    # detect the relation
+    relation = 0
+    if doc1.similarity(doc2) > 0.5:
+        relation = 1
+    elif doc1.similarity(doc2) < -0.5:
+        relation = 2
+    # return the relation
+    return relation
+```
+0
+0
+0
+0
+0
+0
+0
+0
+1
+Sentence 1: Many people believe that it is important to reduce the use of fossil fuels. Sentence 2: Fossil fuels are a major source of pollution and greenhouse gases.
+1
+1
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+{item[2]}
+0
+1
+1
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+1
+0
+1
+```python
+def detect_argument_relation(sentence1, sentence2):
+  """
+  Determine the argument relation between sentence1 and sentence2.
+
+  Args:
+    sentence1 (str): The first sentence.
+    sentence2 (str): The second sentence.
+
+  Returns:
+    int: 1 if sentence1 supports sentence2, 2 if sentence1 attacks sentence2, 
+    0 otherwise.
+  """
+
+  # Tokenize the sentences.
+  tokens1 = sentence1.split()
+  tokens2 = sentence2.split()
+
+  # Create a bag-of-words representation of the sentences.
+  bow1 = Counter(tokens1)
+  bow2 = Counter(tokens2)
+
+  # Compute the cosine similarity between the two bag-of-words representations.
+  similarity = cosine_similarity(bow1, bow2)
+
+  # Threshold the similarity to determine the argument relation.
+  if similarity >= 0.5:
+    return 1  # Supporting
+  elif similarity <= -0.5:
+    return 2  # Attacking
+  else:
+    return 0  # No relation
+
+if __name__ == "__main__":
+  # Get the input sentences.
+  sentence1 = input("Sentence 1: ")
+  sentence2 = input("Sentence 2: ")
+
+  # Detect the argument relation.
+  relation = detect_argument_relation(sentence1, sentence2)
+
+  # Print the relation.
+  if relation == 1:
+    print("Supporting")
+  elif relation == 2:
+    print("Attacking")
+  else:
+    print("No relation")
+```
+1
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+0
+0
+2
+0
+```python
+def detect_relation(sentence1, sentence2):
+  """Detects the relation between two sentences.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    0 if there is no relation, 1 if the relation is Supporting, and 2 if the relation is Attacking.
+  """
+
+  # Tokenize the sentences.
+  tokens1 = nltk.word_tokenize(sentence1)
+  tokens2 = nltk.word_tokenize(sentence2)
+
+  # Create a dependency tree for each sentence.
+  tree1 = nltk.tree.ParentedTree.fromstring(
+      nltk.data.dependencytreebank.read(sentence1))
+  tree2 = nltk.tree.ParentedTree.fromstring(
+      nltk.data.dependencytreebank.read(sentence2))
+
+  # Identify the subject and object of each sentence.
+  subject1 = get_subject(tree1)
+  object1 = get_object(tree1)
+  subject2 = get_subject(tree2)
+  object2 = get_object(tree2)
+
+  # Check if there is a relation between the two sentences.
+  if subject1 == subject2 and object1 == object2:
+    return 1  # Supporting
+  elif subject1 == object2 and object1 == subject2:
+    return 2  # Attacking
+  else:
+    return 0  # No relation
+
+
+def get_subject(tree):
+  """Gets the subject of a dependency tree."""
+
+  # Find the NP node that is the root of the tree.
+  np_node = tree.get_tree('NP')
+  np_node = np_node[0]
+
+  # Get the first child of the NP node. This is typically the subject.
+  subject = np_node.children[0]
+  return subject.lexeme
+
+
+def get_object(tree):
+  """Gets the object of a dependency tree."""
+
+  # Find the VP node that is the root of the tree.
+  vp_node = tree.get_tree('VP')
+  vp_node = vp_node[0]
+
+  # Get the last child of the VP node. This is typically the object.
+  object = vp_node.children[-1]
+  return object.lexeme
+```
+0
+0
+0
+0
+0
+```python
+def detect_argument_relation(sentence1, sentence2):
+  """
+  This function detects the argument relation between two sentences.
+
+  Args:
+    sentence1 (str): The first sentence.
+    sentence2 (str): The second sentence.
+
+  Returns:
+    int: The argument relation between the two sentences. 0 for no relation, 1 for Supporting, and 2 for Attacking.
+  """
+
+  # Tokenize the sentences.
+  tokens1 = sentence1.split()
+  tokens2 = sentence2.split()
+
+  # Create a bag of words for each sentence.
+  bow1 = {}
+  for token in tokens1:
+    if token not in bow1:
+      bow1[token] = 0
+    bow1[token] += 1
+
+  bow2 = {}
+  for token in tokens2:
+    if token not in bow2:
+      bow2[token] = 0
+    bow2[token] += 1
+
+  # Compute the cosine similarity between the two bags of words.
+  similarity = cosine_similarity(bow1, bow2)
+
+  # Determine the argument relation based on the cosine similarity.
+  if similarity > 0.5:
+    return 1  # Supporting
+  elif similarity < -0.5:
+    return 2  # Attacking
+  else:
+    return 0  # No relation
+```
+0
+1
+{
+ "relation": 0
+}
+0
+0
+1
+0
+0
+0
+0
+1
+1
+0
+0
+0
+```python
+import numpy as np
+
+def relation_detection(sentence1, sentence2):
+  """
+  This function takes two sentences as input and returns a numeric value indicating the relationship between the two sentences.
+
+  Args:
+    sentence1: The first sentence.
+    sentence2: The second sentence.
+
+  Returns:
+    A numeric value indicating the relationship between the two sentences. 0 indicates no relation, 1 indicates a Supporting relation, and 2 indicates an Attacking relation.
+  """
+
+  # Convert the sentences to lowercase and tokenize them.
+  sentence1 = sentence1.lower().split()
+  sentence2 = sentence2.lower().split()
+
+  # Create a list of stopwords.
+  stopwords = set(np.loadtxt("stopwords.txt", dtype=str))
+
+  # Remove stopwords from the sentences.
+  sentence1 = [word for word in sentence1 if word not in stopwords]
+  sentence2 = [word for word in sentence2 if word not in stopwords]
+
+  # Create a list of keywords for each sentence.
+  keywords1 = [word for word in sentence1 if word in ["good", "great", "excellent", "positive", "favorable"]]
+  keywords2 = [word for word in sentence2 if word in ["bad", "terrible", "awful", "negative", "unfavorable"]]
+
+  # Check if the two sentences have any keywords in common.
+  if len(set(keywords1).intersection(set(keywords2))) > 0:
+    # If the two sentences have any keywords in common, then they are related.
+    return 1
+  else:
+    # If the two sentences do not have any keywords in common, then they are not related.
+    return 0
+
+# Get the input sentences from the user.
+sentence1 = input("Enter the first sentence: ")
+sentence2 = input("Enter the second sentence: ")
+
+# Detect the relationship between the two sentences.
+relation = relation_detection(sentence1, sentence2)
+
+# Print the relationship between the two sentences.
+if relation == 1:
+  print("The two sentences are related.")
+elif relation == 2:
+  print("The two sentences are attacking.")
+else:
+  print("The two sentences are not related.")
+```
+0
+0
+0
+0
+0
+0
+0
+1
+1
+0
+0
+0
+0
+2

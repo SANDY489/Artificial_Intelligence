@@ -4,10 +4,14 @@ import yaml
 import pandas as pd #update the latest openai version
 import anthropic
 import time
+
+
 # %% [markdown] 
 # Read the training file
-train_data = pd.read_json('test_claude.json')
+train_data = pd.read_json('test.json')
 train_data.head()
+
+
 #%% [markdown]
 # Load API key
 with open("api_keys.yaml", "r") as file:
@@ -17,48 +21,22 @@ for api_key in data['api_keys']:
         Claude_key = api_key['claude3_key']
 client = anthropic.Anthropic( api_key = Claude_key)
 
-# %% [markdown] 
-# Prompt 1: Generate next 300 Response and save to raw.txt via Opus model
-with open('dev.json') as f:
-    data = json.load(f)
-count = 0
-with open('raw_result_claude_next300.txt', "w") as file:
-    for item in data:
-        count += 1
-        if count > 300:
-            sentence1 = item[0]
-            sentence2 = item[1]
-            prompt = "User input: Sentence 1:"+ sentence1+ "Sentence 2: "+sentence2
-            
-            message = client.messages.create(
-                model="claude-3-opus-20240229", # 模型型號
-                max_tokens=1000, # 選用，回傳token的最大長度，避免爆預算
-                system="You are a NLP researcher. This is an argument relation detection task. You should determine if there is a Supporting relation from sentence 1 to sentence 2 with output 1, else if it is an Attacking relation from sentence 1 to sentence 2 with output 2, or it does not detect any relationship between sentence 1 and sentence 2 with output 0. Only output one numeric number(0,1,2).",
-                messages=[
-                    {"role": "user", "content":prompt}
-                ]
-            )
 
-            print(message.content[0])
-            message_to_save = str(message.content[0])+'\n'
-            file.write(message_to_save)
-            time.sleep(5)
 
 # %% [markdown] 
 # Prompt 1: Generate Response using Haiku Model
 with open('dev.json') as f:
     data = json.load(f)
-count = 0
+    
 with open('raw_result_claude_haiku.txt', "w") as file:
     for item in data:
-        sentence1 = item[0]
-        sentence2 = item[1]
-        prompt = "User input: Sentence 1:"+ sentence1+ "Sentence 2: "+sentence2
+        sentence = item[0]
+        prompt = "Given sentence :"+ sentence
         
         message = client.messages.create(
             model="claude-3-haiku-20240307", # 模型型號
             max_tokens=200, # 選用，回傳token的最大長度，避免爆預算
-            system="You are a NLP researcher. This is an argument relation detection task. You should determine if there is a Supporting relation from sentence 1 to sentence 2 with output 1, else if it is an Attacking relation from sentence 1 to sentence 2 with output 2, or it does not detect any relationship between sentence 1 and sentence 2 with output 0. Only output one numeric number(0,1,2).",
+            system="You will be performing argument unit mining on a given sentence to determine if it is a claim or a premise. Carefully read the sentence and think about whether it expresses an opinion, viewpoint, or stance on an issue (making it a claim) or if it simply states a fact or supporting evidence (making it a premise). Write out your reasoning for the classification inside reasoning tags. Finally, if the sentence is a claim, output number 1 . If the sentence is a premise, output number 0 .",
             messages=[
                 {"role": "user", "content":prompt}
             ]
@@ -74,7 +52,7 @@ with open('raw_result_claude_haiku.txt', "w") as file:
            
 with open('dev.json') as f:
     data = json.load(f)
-with open('raw_result_claude_haiku.txt', "w") as file:
+with open('raw_result2_claude_haiku.txt', "w") as file:
     for item in data:
         sentence1 = item[0]
         sentence2 = item[1]
