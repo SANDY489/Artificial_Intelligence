@@ -1,0 +1,172 @@
+{
+    "os": "Linux-6.5.0-35-generic-x86_64-with-glibc2.35",
+    "python": "3.10.14",
+    "heartbeatAt": "2024-06-10T08:09:18.785173",
+    "startedAt": "2024-06-10T08:09:18.163592",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--exp_name",
+        "DPO",
+        "--model_name",
+        "unsloth/llama-3-8b-bnb-4bit",
+        "--train",
+        "--wandb_token",
+        "15d8c1222fd9699adc84f2baa9ac2413066c37ac",
+        "--num_epochs",
+        "1"
+    ],
+    "state": "running",
+    "program": "/home/yiz/Desktop/AI2024-hw6-sandy/main.py",
+    "codePathLocal": "main.py",
+    "codePath": "main.py",
+    "host": "yiz-System-Product-Name",
+    "username": "yiz",
+    "executable": "/home/yiz/anaconda3/envs/ai_hw6/bin/python",
+    "cpu_count": 16,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 2414.326833333333,
+        "min": 800.0,
+        "max": 4783.333333333333
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3524.663,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 3281.263,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 3848.723,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 3766.357,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 3469.936,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 3138.493,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 3930.414,
+            "min": 800.0,
+            "max": 5200.0
+        },
+        {
+            "current": 3449.436,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 2486.948,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 3463.956,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 1385.919,
+            "min": 800.0,
+            "max": 5100.0
+        },
+        {
+            "current": 2609.229,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 1877.241,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 3151.28,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 2780.479,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 2751.393,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4100.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 1832.2072448730469,
+            "used": 349.61661529541016
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4090",
+            "memory_total": 25757220864
+        }
+    ],
+    "memory": {
+        "total": 46.781822204589844
+    }
+}

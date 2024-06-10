@@ -1,0 +1,21 @@
+
+Using cuda device
+==((====))==  Unsloth: Fast Llama patching release 2024.5
+   \\   /|    GPU: NVIDIA GeForce RTX 4090. Max memory: 23.635 GB. Platform = Linux.
+O^O/ \_/ \    Pytorch: 2.3.0. CUDA = 8.9. CUDA Toolkit = 12.1.
+\        /    Bfloat16 = TRUE. Xformers = 0.0.26.post1. FA = False.
+ "-____-"     Free Apache license: http://github.com/unslothai/unsloth
+Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+Unsloth 2024.5 patched 32 layers with 32 QKV layers, 32 O layers and 32 MLP layers.
+/home/yiz/anaconda3/envs/ai_hw6/lib/python3.10/site-packages/transformers/training_args.py:1474: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+/home/yiz/anaconda3/envs/ai_hw6/lib/python3.10/site-packages/trl/trainer/dpo_trainer.py:332: UserWarning: When using DPODataCollatorWithPadding, you should set `remove_unused_columns=False` in your TrainingArguments we have set it for you, but you should do it yourself in the future.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/home/yiz/Desktop/AI2024-hw6-sandy/main.py", line 80, in <module>
+    DPO.DPO_train(args, output_dir)
+  File "/home/yiz/Desktop/AI2024-hw6-sandy/DPO.py", line 89, in DPO_train
+    dpo_trainer = DPOTrainer(
+  File "/home/yiz/anaconda3/envs/ai_hw6/lib/python3.10/site-packages/trl/trainer/dpo_trainer.py", line 379, in __init__
+    train_dataset = train_dataset.map(self.tokenize_row, num_proc=self.dataset_num_proc)
+AttributeError: 'str' object has no attribute 'map'
