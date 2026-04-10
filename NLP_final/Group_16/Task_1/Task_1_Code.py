@@ -40,7 +40,7 @@ with open(train, 'w') as file:
         file.write('\n') 
 
 # %%
-df2 = pd.read_json('/home/zengwesley/NTUKaggle/team_dev.json')
+df2 = pd.read_json('/home/sandy/NTUKaggle/team_dev.json')
 eval_list=[]
 for i in range(0, len(df2)):
     sample={"messages": [{"role": "system", "content": "You are a NLP researcher. This is am argument mining task. You should determine the given two sentence is support each other with output 1, attack each other with output 2, none with output 0. Only output one numeric number. "} , 
@@ -88,7 +88,7 @@ client.fine_tuning.jobs.create(
 )
 
 #load test set
-test = pd.read_json('/home/zengwesley/NTUKaggle/team_test.json')
+test = pd.read_json('/home/sandy/NTUKaggle/team_test.json')
 
 # Display the dataframe
 test.head()
